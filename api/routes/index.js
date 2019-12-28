@@ -61,8 +61,8 @@ function updateData(req, res, doc){
 
     var db = client.db('tester');
     var where = {_id:new Mongo.ObjectId(req.body._id)};
-    
-    db.collection(doc).updateOne({_id:where._id},{$set:req.body} , (err, obj)=>{
+    delete req.body._id;
+    db.collection(doc).updateOne(where,{$set:req.body} , (err, obj)=>{
       if(err) throw err;
       res.send('sukses');
     })
