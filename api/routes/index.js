@@ -21,10 +21,15 @@ function insertData(res, req, doc){
 }
 
 function getData(res, doc){
+  
   MongoClient.connect('mongodb://localhost:27017', (err, client)=>{
     if(err) throw err;
 
     var db = client.db('tester')
+    db.createCollection(doc, function(err, res) {
+      if (err) throw err;
+      console.log("Collection created!");
+    });
     db.collection(doc).find().toArray((err, result)=>{
       if(err) throw err;
       console.log(result);
@@ -42,7 +47,22 @@ function deleteData(req, res, doc){
     var db = client.db('tester');
     var where = req.body;
     where._id = new Mongo.ObjectId(where._id);
-    db.collection(doc).deleteOne(req.body, (err, obj)=>{
+    db.collection(doc).deleteOne(where, req.body, (err, obj)=>{
+      if(err) throw err;
+      res.send('sukses');
+    })
+    //db.close();
+  })
+}
+
+function updateData(req, res, doc){
+  MongoClient.connect('mongodb://localhost:27017', (err, client)=>{
+    if(err) throw err;
+
+    var db = client.db('tester');
+    var where = {_id:new Mongo.ObjectId(req.body._id)};
+    
+    db.collection(doc).updateOne({_id:where._id},{$set:req.body} , (err, obj)=>{
       if(err) throw err;
       res.send('sukses');
     })
@@ -68,6 +88,11 @@ router.post('/form-input', (req,res,next)=>{
 router.get('/data-get', (req, res, next)=>{
   getData(res, 'siswa');
 });
+
+router.post('/form-update', (req, res, next)=>{
+  console.log('s');
+  updateData(req, res, 'siswa');
+})
 
 router.post('/data-delete', (req, res, next)=>{
   console.log(JSON.stringify(req.body));

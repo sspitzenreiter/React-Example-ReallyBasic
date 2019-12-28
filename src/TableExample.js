@@ -13,7 +13,8 @@ class TableExample extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            data:[]
+            data:[],
+            
         };
     }
 
@@ -35,13 +36,20 @@ class TableExample extends React.Component{
         })
     }
 
+    updateData=ev=>{
+        var id = ev.target.getAttribute('data-key');
+        var data = this.state.data.find(x=>x._id===id);
+        this.props.onUpdateView('form', data);
+    }
+
     render(){
         var data = this.state.data.map((item, i)=>{
             return(
                 <tr>
                     <td>{item.nama}</td>
                     <td>{item.telp}</td>
-                    <td><Button color="danger"  data-key={item._id} onClick={this.deleteData}>Delete</Button></td>
+                    <td>{item.jk}</td>
+                    <td><Button color="warning" data-key={item._id} onClick={this.updateData}>Update</Button><Button color="danger"  data-key={item._id} onClick={this.deleteData}>Delete</Button></td>
                 </tr>)
             
         });
@@ -58,6 +66,7 @@ class TableExample extends React.Component{
                         <tr>
                             <th>Nama</th>
                             <th>Nomor Telepon</th>
+                            <th>Jenis Kelamin</th>
                             <th>Aksi</th>
                         </tr>
                         {data}

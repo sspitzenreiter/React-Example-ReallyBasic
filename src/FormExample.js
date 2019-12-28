@@ -16,12 +16,24 @@ class FormExample extends React.Component{
         super(props);
         this.state = {
             nama:'',
-            telp:''
+            telp:'',
+            jk:''
         };
+        
+    }
+
+    componentDidMount(){
+        if(this.props.data!=null){
+            this.setState(this.props.data);
+        }
     }
 
     kirim=(ev)=>{
-        axios.post('http://localhost:3500/form-input', this.state).then(res=>{
+        var url = 'http://localhost:3500/form-input';
+        if(this.props.data!=null){
+            url = 'http://localhost:3500/form-update';
+        }
+        axios.post(url, this.state).then(res=>{
             if(res=="sukses"){
                 this.setState({nama:'', telp:''});
             }
@@ -41,6 +53,17 @@ class FormExample extends React.Component{
                         <FormGroup>
                             <Label>Nomor Telepon : </Label>
                             <Input type="text" value={this.state.telp} placeholder="Telepon" onChange={ev=>this.setState({telp:ev.target.value})}/>
+                        </FormGroup>
+                        <FormGroup check>
+                            <Label check>
+                                 <Input type="radio" name="jk" onClick={ev=>this.setState({jk:'L'})}/>Laki - Laki
+                            </Label>
+                        </FormGroup>
+                        <FormGroup check>
+                            <Label check>
+                                 <Input type="radio" name="jk" onClick={ev=>this.setState({jk:'P'})}/>Perempuan
+                            </Label>
+                            
                         </FormGroup>
                     </Form>
                 </CardBody>
