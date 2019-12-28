@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var MongoClient = require('mongodb').MongoClient;
+var Mongo = require('mongodb');
+var MongoClient = Mongo.MongoClient;
 /* GET home page. */
 
 function insertData(res, req, doc){
@@ -9,10 +10,43 @@ function insertData(res, req, doc){
 
     var db = client.db('tester')
     var data = req.body;
-    dbo.collection('isian').insertOne(data, (err, res)=>{
+    db.collection(doc).insertOne(data, (err, result)=>{
       if(err) throw err;
-      db.close();
+      
+      res.send('Sukses')
+      //db.close();
     });
+    
+  })
+}
+
+function getData(res, doc){
+  MongoClient.connect('mongodb://localhost:27017', (err, client)=>{
+    if(err) throw err;
+
+    var db = client.db('tester')
+    db.collection(doc).find().toArray((err, result)=>{
+      if(err) throw err;
+      console.log(result);
+      res.send(result);
+      
+    })
+    //db.close();
+  })
+}
+
+function deleteData(req, res, doc){
+  MongoClient.connect('mongodb://localhost:27017', (err, client)=>{
+    if(err) throw err;
+
+    var db = client.db('tester');
+    var where = req.body;
+    where._id = new Mongo.ObjectId(where._id);
+    db.collection(doc).deleteOne(req.body, (err, obj)=>{
+      if(err) throw err;
+      res.send('sukses');
+    })
+    //db.close();
   })
 }
 
@@ -24,10 +58,19 @@ router.use('/', function(req, res, next){
 });
 
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  getData(res, 'siswa');
 });
 
 router.post('/form-input', (req,res,next)=>{
-  insertData(res, req, doc);
+  insertData(res, req, 'siswa');
+});
+
+router.get('/data-get', (req, res, next)=>{
+  getData(res, 'siswa');
+});
+
+router.post('/data-delete', (req, res, next)=>{
+  console.log(JSON.stringify(req.body));
+  deleteData(req, res, 'siswa');
 })
 module.exports = router;

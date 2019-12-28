@@ -30,7 +30,7 @@ const Navigasi = (props) =>{
                     <NavLink href="/coba">Tes Coba</NavLink>
                     </NavItem>
                     <NavItem>
-                    <NavLink href="">GitHub</NavLink>
+                    <NavLink href="/crud">Crud Contoh</NavLink>
                     </NavItem>
                     <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav caret>
